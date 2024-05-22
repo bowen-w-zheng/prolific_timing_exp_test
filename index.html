@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timing Experiment</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /* Prevent scrollbars */
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        #instructions {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            border-radius: 10px;
+            text-align: center;
+            z-index: 1;
+            font-size: 1.2em; /* Increase font size */
+        }
+        .example-container {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+            width: 100%;
+        }
+        .example {
+            text-align: center;
+        }
+        .example canvas {
+            margin-top: 10px;
+            width: 100px;
+            height: 100px;
+            display: block;
+        }
+        #startButton {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #startFormalButton {
+            display: none; /* Hide initially */
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            position: fixed; /* Position it at the bottom */
+            bottom: 20%; /* 20px from the bottom */
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2; /* Ensure it is above other elements */
+        }
+        #experimentCanvasContainer {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            background-color: black;
+            position: relative;
+        }
+        canvas {
+            background-color: transparent; /* Make canvas background transparent */
+            z-index: 0; /* Ensure canvas is below instructions */
+        }
+    </style>
+</head>
+<body>
+    <div id="instructions">
+        <h2>Timing Task Instructions</h2>
+        <p>You will do a timing task. In each trial:</p>
+        <ul style="text-align: left;">
+            <li>You will see a <strong>fixation point</strong> (1 below).</li>
+            <li>Then, a circle will appear (2 below). This indicates you should <strong>start timing</strong>.</li>
+            <li>Press the <strong>space bar</strong> when you think the target time has passed.</li>
+            <li>Sometimes, you will see a <strong>flash</strong> (3 below). We are interested in studying how the flash might affect your timing.</li>
+        </ul>
+        <div class="example-container">
+            <div class="example">
+                <p>1: Fixation Point</p>
+                <canvas id="exampleCanvas1" width="100" height="100"></canvas>
+            </div>
+            <div class="example">
+                <p>2: Start Timing</p>
+                <canvas id="exampleCanvas2" width="100" height="100"></canvas>
+            </div>
+            <div class="example">
+                <p>3: Flash</p>
+                <canvas id="exampleCanvas3" width="100" height="100"></canvas>
+            </div>
+        </div>
+        <p>In practice trials, you will get feedback:</p>
+        <ul style="text-align: left;">
+            <li>A vertical bar to the <strong>left</strong> means you are too fast.</li>
+            <li>A vertical bar to the <strong>right</strong> means you are too slow.</li>
+            <li>You will also see your <strong>score</strong>, with 100 being perfect timing.</li>
+        </ul>
+        <p>Aim for the highest score. You can earn up to an extra <strong>$5</strong> based on your score.</p>
+        <button id="startButton">Start Experiment</button>
+    </div>
+    <div id="experimentCanvasContainer">
+        <canvas id="experimentCanvas"></canvas>
+    </div>
+    <script src="experiment.js"></script>
+</body>
+</html>
