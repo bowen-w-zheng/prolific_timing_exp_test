@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const startButton = document.getElementById('startButton');
     const startFormalButton = document.getElementById('startFormalButton'); // New button
 
+
     // Set canvas size to fill the window
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
@@ -22,10 +23,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const maxResponseTime = correctTime + 4 * timeWindow;  // Max wait time without response
     const iti = 1000;  // Inter-trial interval
     const max_reward = 100;
+    
+
 
     const maxPracticeTrialsCount = 200;
     const formalTrialsCount = 500;
-
+    let flashOn = 0;
     let trialCount = 0;
     let isPractice = true;
 
@@ -108,8 +111,9 @@ document.addEventListener('DOMContentLoaded', function() {
             drawFixation();
         }, 100);
         
-        // Decide randomly whether to have a flash this trial
-        if (Math.random() < 0.5) {
+        // Decide randomly whether flashOn or off
+        flashOn = Math.random() < 0.5;
+        if (flashOn) {
             flashHandle = setTimeout(drawFlash, flashTime); // Schedule a flash at 800ms
         }
     
@@ -162,6 +166,7 @@ document.addEventListener('DOMContentLoaded', function() {
             isPractice: isPractice,
             responseTime: responseTime,
             isCorrect: isCorrect,
+            flashOn: flashOn,
             error: error,
             reward: reward
         });
@@ -211,32 +216,34 @@ document.addEventListener('DOMContentLoaded', function() {
     function endExperiment() {
         // Convert trial data to JSON
         let dataToSend = JSON.stringify(trialData);
-
-        // Send the data to your server (you need to implement server-side handling)
-        fetch('https://yourserver.com/save-data', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: dataToSend
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Data saved successfully:', data);
-            // Redirect to Prolific completion URL
-            window.location.href = "https://app.prolific.co/submissions/complete?cc=YOUR_COMPLETION_CODE";
-        })
-        .catch(error => {
-            console.error('Error saving data:', error);
-        });
+    
+        // Create a Blob from the JSON string and create a link to download it
+        const blob = new Blob([dataToSend], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'experiment_data.json';
+        a.click();
+    
+        // Provide instructions to upload the file
+        alert("Please upload the downloaded file to the Google Form to complete the study. You will be redirected to Prolific to finish.");
+    
+        // Open Google Form in a new tab
+        window.open("https://docs.google.com/forms/d/e/1FAIpQLSeF4b3Hy1ov1NfiySurlQiQY6qeWqgYp1idL4_RdzF1Jes-Nw/viewform?usp=sf_link", "_blank");
+    
+        // After a delay, redirect to Prolific completion URL
+        setTimeout(function() {
+            window.location.href = "https://app.prolific.com/submissions/complete?cc=CHQS67SD";
+        }, 20000); // Adjust the delay as needed to ensure the form is submitted
     }
+    
 
     document.addEventListener('keydown', function(event) {
         if (event.code === 'Space' && state === 'waiting_for_response') {
             state = 'closed_response'; // Close response state
             const responseTime = Date.now() - lastAnnularTime;
             const isCorrect = responseTime >= (correctTime - timeWindow) && responseTime <= (correctTime + timeWindow);
-            giveFeedback(isCorrect, responseTime);
+            giveFeedback(isCorrect, responseTime, flashOn);
         }
     });
 
