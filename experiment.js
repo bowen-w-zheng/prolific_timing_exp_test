@@ -29,6 +29,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const setTimeDurMin = 300
     const setTimeDurMax = 1500
     const max_reward = 100;
+    const flashjitterMin = -75
+    const flashjitterMax = 75
     
 
 
@@ -138,8 +140,10 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Decide randomly whether flashOn or off
         flashOn = Math.random() < 0.5;
+        flashjitter = flashjitterMin + (flashjitterMax - flashjitterMin) * Math.random() // random small jitter with mean at 
+        trueflashTime = flashTime + flashjitter
         if (flashOn) {
-            flashHandle = setTimeout(drawFlash, flashTime); // Schedule a flash at 800ms
+            flashHandle = setTimeout(drawFlash, trueflashTime); // Schedule a flash at 800ms
         }
     
         // Set a timeout to automatically fail the trial if no response after the specified time
@@ -195,6 +199,8 @@ document.addEventListener('DOMContentLoaded', function() {
             responseTime: responseTime,
             isCorrect: isCorrect,
             flashOn: flashOn,
+            flashTime: flashTime,
+            trueflashTime: trueflashTime,
             error: error,
             reward: reward
         });
@@ -262,7 +268,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // After a delay, redirect to Prolific completion URL
         setTimeout(function() {
             window.location.href = "https://app.prolific.com/submissions/complete?cc=CHQS67SD";
-        }, 20000); // Adjust the delay as needed to ensure the form is submitted
+        }, 5000); // Adjust the delay as needed to ensure the form is submitted
     }
     
 
