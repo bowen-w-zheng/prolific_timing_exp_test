@@ -268,7 +268,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (newWindow) {
             newWindow.focus();
         } else {
-            alert("Popup blocked! Please allow popups for this website.");
+            alert("Popup blocked! Please allow popups for this website. You might see the option around the brower link entry location. If not, copy paste this link manually: https://docs.google.com/forms/d/e/1FAIpQLSeF4b3Hy1ov1NfiySurlQiQY6qeWqgYp1idL4_RdzF1Jes-Nw/viewform?usp=sf_link");
         }
     
         // Redirect to Prolific completion URL after a delay
