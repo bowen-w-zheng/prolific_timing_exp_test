@@ -263,13 +263,20 @@ document.addEventListener('DOMContentLoaded', function() {
         alert("Please upload the downloaded file to the Google Form to complete the study. You will be redirected to Prolific to finish.");
     
         // Open Google Form in a new tab
-        window.open("https://docs.google.com/forms/d/e/1FAIpQLSeF4b3Hy1ov1NfiySurlQiQY6qeWqgYp1idL4_RdzF1Jes-Nw/viewform?usp=sf_link", "_blank");
+        const googleFormUrl = "https://docs.google.com/forms/d/e/1FAIpQLSeF4b3Hy1ov1NfiySurlQiQY6qeWqgYp1idL4_RdzF1Jes-Nw/viewform?usp=sf_link";
+        const newWindow = window.open(googleFormUrl, "_blank");
+        if (newWindow) {
+            newWindow.focus();
+        } else {
+            alert("Popup blocked! Please allow popups for this website.");
+        }
     
-        // After a delay, redirect to Prolific completion URL
+        // Redirect to Prolific completion URL after a delay
         setTimeout(function() {
-            window.location.href = "https://app.prolific.com/submissions/complete?cc=C1JFHEUP";
+            window.location.href = "https://app.prolific.com/submissions/complete?cc=CHQS67SD";
         }, 5000); // Adjust the delay as needed to ensure the form is submitted
     }
+    
     
 
     document.addEventListener('keydown', function(event) {
