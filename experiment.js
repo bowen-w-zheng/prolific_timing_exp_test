@@ -16,17 +16,24 @@ document.addEventListener('DOMContentLoaded', function() {
     let centerY = canvas.height / 2;
     const fixationSize = 10;  // Size for the fixation point
     const annularSize = 50;  // Size for the annular
-    const timeWindow = 300;  // Acceptable timing window
+    const rewardWindowRatio = 0.3 // proportional to the timing interval
     const flashTime = 800; // Onset time for the flash
     const fixRatio = 1.44444; // Ratio of fixation correct time to the flash Onset time
     const correctTime = flashTime * fixRatio;  // Ideal timing for pressing the space bar
+    const timeWindow = correctTime * rewardWindowRatio;  // Acceptable timing window
     const maxResponseTime = correctTime + 4 * timeWindow;  // Max wait time without response
-    const iti = 1000;  // Inter-trial interval
+    const itiMean = 500
+    const itiMin = 300
+    const itiMax = 1000
+    const setTimeDurMean = 300
+    const setTimeDurMin = 300
+    const setTimeDurMax = 1500
     const max_reward = 100;
     
 
 
     const maxPracticeTrialsCount = 200;
+    const practiceTrialsCount = 50;
     const formalTrialsCount = 500;
     let flashOn = 0;
     let trialCount = 0;
@@ -47,7 +54,25 @@ document.addEventListener('DOMContentLoaded', function() {
     const exampleCanvas3 = document.getElementById('exampleCanvas3');
     const exampleCtx3 = exampleCanvas3.getContext('2d');
 
-    const practiceTrialsCount = 50;
+
+
+    function randomExponential(beta) {
+        // Generate a uniform random number in the range (0, 1)
+        const u = Math.random();
+        // Apply the inverse transform method for exponential distribution
+        return -beta * Math.log(1 - u);
+    }
+    
+    function boundedExponential(beta, min, max) {
+        let value;
+        do {
+            // Generate a random number from the exponential distribution with mean `beta`
+            value = randomExponential(beta);
+            // Adjust the value to start from `min`
+            value += min;
+        } while (value > max);
+        return value;
+    }
 
     function drawFixationExample(ctx) {
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
@@ -156,6 +181,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function giveFeedback(isCorrect, responseTime) {
+        iti = boundedExponential(itiMean, itiMin, itiMax)
         const error = responseTime - correctTime; // Calculate the error
         const error_abs = Math.abs(responseTime - correctTime); // Absolute value of error
         const reward = Math.max(0, max_reward - (max_reward / timeWindow) * error_abs); // Calculate reward
@@ -163,6 +189,8 @@ document.addEventListener('DOMContentLoaded', function() {
         // Log the trial data
         trialData.push({
             trialNumber: trialCount,
+            iti: iti,
+            setTimeDur: setTimeDur,
             isPractice: isPractice,
             responseTime: responseTime,
             isCorrect: isCorrect,
@@ -209,8 +237,8 @@ document.addEventListener('DOMContentLoaded', function() {
         state = 'init'; // Set the state to init
         drawFixation();  // Draw fixation point to start
         // Sample a time to decide when to show the annular, exponential decaying with mean at 1000ms
-        const time_before_ready = -Math.log(1 - Math.random()) * 1000 + 200;
-        setTimeout(drawAnnular, time_before_ready);  // Delay before showing annular
+        setTimeDur = boundedExponential(setTimeDurMean, setTimeDurMin, setTimeDurMax)
+        setTimeout(drawAnnular, setTimeDur );  // Delay before showing annular
     }
 
     function endExperiment() {
