@@ -35,8 +35,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
     const maxPracticeTrialsCount = 200;
-    const practiceTrialsCount = 5;
-    const formalTrialsCount = 5;
+    const practiceTrialsCount = 50;
+    const formalTrialsCount = 200;
     let flashOn = 0;
     let trialCount = 0;
     let isPractice = true;
