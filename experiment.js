@@ -273,7 +273,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
         // Redirect to Prolific completion URL after a delay
         setTimeout(function() {
-            window.location.href = "https://app.prolific.com/submissions/complete?cc=CHQS67SD";
+            window.location.href = "https://app.prolific.com/submissions/complete?cc=C1JFHEUP";
         }, 5000); // Adjust the delay as needed to ensure the form is submitted
     }
     
